@@ -17,17 +17,21 @@ public class Program {
 //		Seller seller = sellerDao.findById(3);
 //		System.out.println(seller);
 		
-//		Department dep = new Department(2, null);
+		Department dep = new Department(2, null);
 //		List<Seller> list = sellerDao.findByDepartment(dep);
 //		
 //		for (Seller obj : list) {
 //			System.out.println(obj);
 //		}
 		
-		List<Seller> list = sellerDao.findAll();
-		for(Seller obj : list) {
-			System.out.println(obj);
-		}
+//		List<Seller> list = sellerDao.findAll();
+//		for(Seller obj : list) {
+//			System.out.println(obj);
+//		}
+		
+		Seller seller = new Seller(null, "Greg", "greg@gmail.com", LocalDate.now(), 4000.0, dep);
+		sellerDao.insert(seller);
+		System.out.println(seller.getId());
 	}
 
 }
