@@ -29,9 +29,14 @@ public class Program {
 //			System.out.println(obj);
 //		}
 		
-		Seller seller = new Seller(null, "Greg", "greg@gmail.com", LocalDate.now(), 4000.0, dep);
-		sellerDao.insert(seller);
-		System.out.println(seller.getId());
+//		Seller seller = new Seller(null, "Greg", "greg@gmail.com", LocalDate.now(), 4000.0, dep);
+//		sellerDao.insert(seller);
+//		System.out.println(seller.getId());
+		
+		Seller seller = sellerDao.findById(1);
+		seller.setName("Martha Wayne");
+		sellerDao.update(seller);
+		System.out.println("Update executed");
 	}
 
 }

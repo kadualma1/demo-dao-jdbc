@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,11 +35,7 @@ public class SellerDaoJDBC implements SellerDao {
 					+ "(?, ?, ?, ?, ?)",
 					Statement.RETURN_GENERATED_KEYS);
 			
-			st.setString(1, obj.getName());
-			st.setString(2, obj.getEmail());
-			st.setDate(3, java.sql.Date.valueOf(obj.getBirthDate()));
-			st.setDouble(4, obj.getBaseSalary());
-			st.setInt(5, obj.getDepartment().getId());
+			prepareSellerStatement(st, obj, false);
 			
 			int rowsAffected = st.executeUpdate();
 			
@@ -56,7 +51,7 @@ public class SellerDaoJDBC implements SellerDao {
 				throw new DbException("Unexpected Error");
 			}
 		} catch(SQLException e) {
-			throw new DbException(e.getLocalizedMessage());
+			throw new DbException(e.getMessage());
 		}
 		finally {
 			DB.closeStatement(st);
@@ -65,7 +60,22 @@ public class SellerDaoJDBC implements SellerDao {
 
 	@Override
 	public void update(Seller obj) {
-		
+		PreparedStatement st = null;
+		try {
+			st = conn.prepareStatement(
+					"UPDATE seller "
+					+ "SET name = ?, email = ?, birthDate = ?, baseSalary = ?, departmentId = ? "
+					+ "WHERE id = ?");
+			
+			prepareSellerStatement(st, obj, true);
+			
+			st.executeUpdate();
+		} catch(SQLException e) {
+			throw new DbException(e.getMessage());
+		}
+		finally {
+			DB.closeStatement(st);
+		}
 	}
 
 	@Override
@@ -93,7 +103,7 @@ public class SellerDaoJDBC implements SellerDao {
 			}
 			return null;
 		}catch(SQLException e) {
-			throw new DbException(e.getLocalizedMessage());
+			throw new DbException(e.getMessage());
 		}
 		finally {
 			DB.closeStatement(st);
@@ -132,7 +142,7 @@ public class SellerDaoJDBC implements SellerDao {
 			}
 			return list;
 		}catch(SQLException e) {
-			throw new DbException(e.getLocalizedMessage());
+			throw new DbException(e.getMessage());
 		}
 		finally {
 			DB.closeStatement(st);
@@ -169,7 +179,7 @@ public class SellerDaoJDBC implements SellerDao {
 			}
 			return list;
 		}catch(SQLException e) {
-			throw new DbException(e.getLocalizedMessage());
+			throw new DbException(e.getMessage());
 		}
 		finally {
 			DB.closeStatement(st);
@@ -194,6 +204,16 @@ public class SellerDaoJDBC implements SellerDao {
 		dep.setName(rs.getString("dep_name"));
 		
 		return dep;
+	}
+	
+	private void prepareSellerStatement(PreparedStatement st, Seller obj, boolean includeId) throws SQLException {
+		st.setString(1, obj.getName());
+		st.setString(2, obj.getEmail());
+		st.setDate(3, java.sql.Date.valueOf(obj.getBirthDate()));
+		st.setDouble(4, obj.getBaseSalary());
+		st.setInt(5, obj.getDepartment().getId());
+		
+		if (includeId) {st.setInt(6, obj.getId());}	
 	}
 
 }
