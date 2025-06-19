@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import model.dao.DaoFactory;
+import model.dao.DepartmentDao;
 import model.dao.SellerDao;
 import model.entities.Department;
 import model.entities.Seller;
@@ -11,7 +12,7 @@ import model.entities.Seller;
 public class Program {
 
 	public static void main(String[] args) {
-		
+		/* START: TESTS WITH SELLER DAO
 		System.out.println("--- FIND BY ID ---");
 		System.out.println();
 		SellerDao sellerDao = DaoFactory.createSellerDao();
@@ -56,6 +57,46 @@ public class Program {
 		System.out.println();
 		int id = 11; // Deleting Greg from the INSERT
 		sellerDao.deleteById(id);
+		System.out.println("Delete executed.");
+		System.out.println();
+		
+		END: TESTS WITH SELLER DAO
+		*/
+		
+		System.out.println("--- FIND BY ID ---");
+		System.out.println();
+		DepartmentDao departmentDao = DaoFactory.createDepartmentDao();
+		Department department = departmentDao.findById(3);
+		System.out.println(department);
+		System.out.println();
+
+		System.out.println("--- FIND ALL ---");
+		System.out.println();
+		List<Department> list = departmentDao.findAll();
+		for(Department obj : list) {
+			System.out.println(obj);
+		}
+		System.out.println();
+
+		System.out.println("--- INSERT ---");
+		System.out.println();
+		Department newDepartment = new Department (null, "Food");
+		departmentDao.insert(newDepartment);
+		System.out.println(newDepartment.getId());
+		System.out.println();
+
+		System.out.println("--- UPDATE ---");
+		System.out.println();
+		department = departmentDao.findById(1);
+		department.setName("Cellphones");
+		departmentDao.update(department);
+		System.out.println("Update executed.");
+		System.out.println();
+
+		System.out.println("--- DELETE ---");
+		System.out.println();
+		int id = 5; // Deleting FOOD from the INSERT
+		departmentDao.deleteById(id);
 		System.out.println("Delete executed.");
 		System.out.println();
 	}
